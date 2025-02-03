@@ -4,17 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Интернет-магазин</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .burger {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .menu {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .menu.active {
+            transform: translateX(0);
+        }
+
+        .menu-content {
+            padding: 20px;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            text-align: right;
+            display: block;
+        }
+
+        .products-container {
+            margin-top: 60px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 10px;
+        }
+
+        .product-card {
+            flex: 0 0 auto;
+            width: 200px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px;
+            color: black;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            color: black;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="menu-icon">☰</div>
-        <div class="cart-icon">🛒</div>
+    <header class="header">
+        <div class="burger">☰</div>
+        <div class="burger">🔍</div>
     </header>
 
-    <div id="product-feed" class="product-feed"></div>
+    <div class="menu" id="menu">
+        <div class="close" id="close">✕</div>
+        <div class="menu-content">
+            <!-- Меню содержимое -->
+        </div>
+    </div>
 
-    <script src="menu.js"></script>
-    <script src="script.js"></script>
+    <div class="products-container" id="products-container">
+        <!-- Карточки товаров -->
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">✕</span>
+            <div id="modal-product-info">
+                <!-- Информация о товаре -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Меню
+        const menu = document.getElementById('menu');
+        const burger = document.querySelector('.burger');
+        const close = document.getElementById('close');
+
+        burger.addEventListener('click', () => {
+            menu.classList.add('active');
+        });
+
+        close.addEventListener('click', () => {
+            menu.classList.remove('active');
+        });
+
+        // Модальное окно
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('close-modal');
+
+        function showModal(productInfo) {
+            modal.classList.add('active');
+            document.getElementById('modal-product-info').innerHTML = productInfo;
+        }
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Добавление карточек товаров
+        const productsContainer = document.getElementById('products-container');
+        const products = [
+            {
+                name: 'Товар 1',
+                description: 'Описание товара 1',
+                image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23d4a76a"/></svg>'
+            },
+            {
+                name: 'Товар 2',
+                description: 'Описание товара 2',
+                image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23d4a76a"/></svg>'
+            }
+        ];
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+            `;
+            card.addEventListener('click', () => {
+                showModal(`<h2>${product.name}</h2><p>${product.description}</p>`);
+            });
+            productsContainer.appendChild(card);
+        });
+    </script>
 </body>
 </html>
