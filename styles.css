@@ -1,14 +1,101 @@
 /* styles.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e1e1e;
+    padding: 10px;
+}
+
+.burger {
+    font-size: 24px;
+    cursor: pointer;
+}
+
 .menu {
+    height: 100%;
+    width: 200px;
     position: fixed;
+    top: 0;
+    left: -200px;
+    background-color: #1e1e1e;
+    transition: left 0.3s;
+    padding-top: 60px;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu ul li {
+    padding: 10px;
+}
+
+.menu ul li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.menu.active {
+    left: 0;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    padding: 10px;
+}
+
+.product-card {
+    background-color: #1e1e1e;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 200px;
+    cursor: pointer;
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    padding-top: 100px; 
     left: 0;
     top: 0;
-    width: 250px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.5); 
 }
-.menu.active {
-    transform: translateX(0);
+
+.modal-content {
+    background-color: #000000;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ffffff;
+    width: 80%;
+}
+
+.close {
+    color: #ffffff;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.like-button {
+    margin-top: 10px;
+}
+
+.comments-section {
+    margin-top: 20px;
 }
