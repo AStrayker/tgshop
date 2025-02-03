@@ -11,3 +11,16 @@ document.addEventListener('click', (e) => {
         menu.classList.remove('active');
     }
 });
+// script.js
+const productCards = document.querySelectorAll('.product-card');
+let currentCard = 0;
+
+function showCard(index) {
+    productCards.forEach(card => card.style.display = 'none');
+    productCards[index].style.display = 'block';
+}
+
+setInterval(() => {
+    currentCard = (currentCard + 1) % productCards.length;
+    showCard(currentCard);
+}, 3000);
