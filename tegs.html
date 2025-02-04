@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хештег Менеджер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        #hashtagField {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            resize: vertical;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        #hashtagField:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .button-group button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #copyButton {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        #copyButton:hover {
+            background-color: #218838;
+        }
+        #copyButton:active {
+            transform: scale(0.95);
+        }
+        #clearButton {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        #clearButton:hover {
+            background-color: #c82333;
+        }
+        #clearButton:active {
+            transform: scale(0.95);
+        }
+        .hashtagButtons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .hashtagButton {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 14px;
+        }
+        .hashtagButton:hover {
+            background-color: #d5d5d5;
+        }
+        .hashtagButton.selected {
+            background-color: #007BFF;
+            color: #ffffff;
+        }
+        .hashtagButton.selected:hover {
+            background-color: #0056b3;
+        }
+        .hashtagButton .remove {
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        .hashtagButton.selected .remove {
+            display: inline;
+        }
+        .hashtagButton .remove:hover {
+            color: #ff1a1a;
+        }
+        .separator {
+            margin: 0 5px;
+            color: #555;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            #hashtagField {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <textarea id="hashtagField" readonly>
+
+_____
+**Менеджер замовлень:** @astrajker_cb_id
+**Код цього товару:** `0000001`
+**Оплата:** на Iban, або на картку.
+**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)
+**Повернення:** 14 днів.
+        </textarea>
+        <div class="button-group">
+            <button id="copyButton">Копіювати текст</button>
+            <button id="clearButton">Очистити поле</button>
+        </div>
+        <div class="hashtagButtons">
+            <!-- Buttons will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        const hashtags = [
+            "#TGShopВодіям", "#TGShopАвтомобільніЗарядніПристрої", "#TGShopАвтомобільніТримачі", "#TGShopВідеоРеєстратори", "#TGShopFMMодулятори", "#TGShopАксесуариДляАвто",
+            "#TGShopПавербанкиТАаккамулятори", "#TGShopАкумуляториДляТелефонів", "#TGShopАкумуляториДляПланшета", "#TGShopАкумуляториВнутрішніЗПроводами", "#TGShopАкумуляториВнутрішніЗіШлейфом", "#TGShopПортативніБатареї", "#TGShopЛужніБатарейки", "#TGShopАкумуляторніБатарейки", "#TGShopЗарядніСтанції",
+            "#TGShopАкустика", "#TGShopПортативніКолонки", "#TGShopТВПриставки", "#TGShopГеймпади", "#TGShopАварійнеРадіоДляВиживання", "#TGShopКомп'ютернаАкустика",
+            "#TGShopГаджети", "#TGShopРозумніГодинникиіФітнесТрекери", "#TGShopАксесуариДляРозумнихГодинниківіФітнесТрекерів", "#TGShopМоноподи", "#TGShopНастільніLEDЛампи", "#TGShopІншіГаджети", "#TGShopКільцевіЛампи", "#TGShopМікрофони",
+            "#TGShopЗарядки", "#TGShopБездротовіЗарядніПристрої", "#TGShopМережевіЗарядніПристрої", "#TGShopЗарядкиДляНоутбуків", "#TGShopКабеліUSB", "#TGShopКабеліAUXіHDMI", "#TGShopХабиПерехідникиПодовжувачі",
+            "#TGShopНавушники", "#TGShopНавушникиДляТелефона", "#TGShopBluetoothСтереоГарнітури", "#TGShopBluetoothМоноГарнітури", "#TGShopBluetoothСтереоГарнітуриTWS", "#TGShopГарнітуриДляПК"
+        ];
+        const hashtagField = document.getElementById('hashtagField');
+        const hashtagButtonsContainer = document.querySelector('.hashtagButtons');
+        const copyButton = document.getElementById('copyButton');
+        const clearButton = document.getElementById('clearButton');
+        let itemCode = 1;
+
+        hashtags.forEach(tag => {
+            const button = document.createElement('button');
+            button.className = 'hashtagButton add';
+            button.textContent = tag;
+            button.addEventListener('click', () => toggleHashtag(button, tag));
+            hashtagButtonsContainer.appendChild(button);
+        });
+
+        function toggleHashtag(button, tag) {
+            const currentText = hashtagField.value;
+            const hashtagIndex = currentText.indexOf(tag);
+            
+            if (hashtagIndex !== -1) {
+                hashtagField.value = currentText.replace(tag, '');
+                button.classList.remove('selected', 'remove');
+                button.classList.add('add');
+            } else {
+                hashtagField.value = currentText.replace('Тут вибрані хештеги', `Тут вибрані хештеги${tag}`);
+                button.classList.remove('add');
+                button.classList.add('selected', 'remove');
+            }
+        }
+
+        copyButton.addEventListener('click', () => {
+            hashtagField.select();
+            document.execCommand('copy');
+            alert('Текст скопійовано в буфер обміну');
+        });
+
+        clearButton.addEventListener('click', () => {
+            hashtagField.value = `Тут вибрані хештеги | \n_____\n**Менеджер замовлень:** @astrajker_cb_id\n**Код цього товару:** \`000000${++itemCode}\`\n**Оплата:** на Iban, або на картку.\n**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)\n**Повернення:** 14 днів.`;
+            document.querySelectorAll('.hashtagButton').forEach(button => {
+                button.classList.remove('selected', 'remove');
+                button.classList.add('add');
+            });
+        });
+
+        hashtagField.addEventListener('input', () => {
+            const lines = hashtagField.value.split('\n');
+            if (lines[3].includes('`')) {
+                const code = parseInt(lines[3].split('`')[1]);
+                lines[3] = '**Код цього товару:** `' + code + '`';
+                hashtagField.value = lines.join('\n');
+            }
+        });
+    </script>
+</body>
+</html>
