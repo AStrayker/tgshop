@@ -119,17 +119,50 @@
                 height: 150px;
             }
         }
+        /* New styles for the new fields */
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .field-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .field-group input, .field-group textarea {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .field-group input:focus, .field-group textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="field-group">
+            <label for="titleField">Назва</label>
+            <input type="text" id="titleField" placeholder="Введіть назву">
+        </div>
+        <div class="field-group">
+            <label for="priceField">Ціна (должно добавляться при формировании 30%)</label>
+            <input type="number" id="priceField" placeholder="Введіть ціну">
+        </div>
+        <div class="field-group">
+            <label for="descriptionField">Опис</label>
+            <textarea id="descriptionField" placeholder="Введіть опис"></textarea>
+        </div>
         <textarea id="hashtagField" readonly>
 Навігація - 
-_____
-**Менеджер замовлень:** @astrajker_cb_id
-**Код цього товару:** `0000001`
-**Оплата:** на Iban, або на картку.
-**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)
+_____ 
+**Менеджер замовлень:** @astrajker_cb_id 
+**Код цього товару:** `0000001` 
+**Оплата:** на Iban, або на картку. 
+**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат) 
 **Повернення:** 14 днів.
         </textarea>
         <div class="button-group">
@@ -150,10 +183,14 @@ _____
             "#TGShopЗарядки", "#TGShopБездротовіЗарядніПристрої", "#TGShopМережевіЗарядніПристрої", "#TGShopЗарядкиДляНоутбуків", "#TGShopКабеліUSB", "#TGShopКабеліAUXіHDMI", "#TGShopХабиПерехідникиПодовжувачі",
             "#TGShopНавушники", "#TGShopНавушникиДляТелефона", "#TGShopBluetoothСтереоГарнітури", "#TGShopBluetoothМоноГарнітури", "#TGShopBluetoothСтереоГарнітуриTWS", "#TGShopГарнітуриДляПК"
         ];
+
         const hashtagField = document.getElementById('hashtagField');
         const hashtagButtonsContainer = document.querySelector('.hashtagButtons');
         const copyButton = document.getElementById('copyButton');
         const clearButton = document.getElementById('clearButton');
+        const titleField = document.getElementById('titleField');
+        const priceField = document.getElementById('priceField');
+        const descriptionField = document.getElementById('descriptionField');
         let itemCode = 1;
 
         hashtags.forEach(tag => {
@@ -186,7 +223,13 @@ _____
         });
 
         clearButton.addEventListener('click', () => {
+            // Reset the hashtag field
             hashtagField.value = `Навігація -  | \n_____\n**Менеджер замовлень:** @astrajker_cb_id\n**Код цього товару:** \`000000${++itemCode}\`\n**Оплата:** на Iban, або на картку.\n**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)\n**Повернення:** 14 днів.`;
+            // Reset the new fields
+            titleField.value = '';
+            priceField.value = '';
+            descriptionField.value = '';
+            // Reset hashtag buttons
             document.querySelectorAll('.hashtagButton').forEach(button => {
                 button.classList.remove('selected', 'remove');
                 button.classList.add('add');
