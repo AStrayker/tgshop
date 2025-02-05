@@ -24,9 +24,29 @@
             width: 100%;
             max-width: 800px;
         }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
         #hashtagField {
             width: 100%;
-            height: 200px;
+            height: 150px;
             margin-bottom: 20px;
             padding: 15px;
             border: 2px solid #ddd;
@@ -116,55 +136,34 @@
                 padding: 20px;
             }
             #hashtagField {
-                height: 150px;
+                height: 100px;
             }
-        }
-        /* New styles for the new fields */
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        .field-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .field-group input, .field-group textarea {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .field-group input:focus, .field-group textarea:focus {
-            border-color: #007BFF;
-            outline: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="field-group">
-            <label for="titleField">Назва</label>
+        <div class="input-group">
+            <label for="titleField">Назва:</label>
             <input type="text" id="titleField" placeholder="Введіть назву">
         </div>
-        <div class="field-group">
-            <label for="priceField">Ціна (должно добавляться при формировании 30%)</label>
+        <div class="input-group">
+            <label for="priceField">Ціна (грн):</label>
             <input type="number" id="priceField" placeholder="Введіть ціну">
         </div>
-        <div class="field-group">
-            <label for="descriptionField">Опис</label>
+        <div class="input-group">
+            <label for="descriptionField">Опис:</label>
             <textarea id="descriptionField" placeholder="Введіть опис"></textarea>
         </div>
         <textarea id="hashtagField" readonly>
-Навігація - 
 _____ 
-**Менеджер замовлень:** @astrajker_cb_id 
-**Код цього товару:** `0000001` 
-**Оплата:** на Iban, або на картку. 
-**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат) 
+**Менеджер замовлень:** @astrajker_cb_id
+**Код цього товару:** `0000001`
+**Оплата:** на Iban, або на картку.
+**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)
 **Повернення:** 14 днів.
-        </textarea>
+_____ 
+</textarea>
         <div class="button-group">
             <button id="copyButton">Копіювати текст</button>
             <button id="clearButton">Очистити поле</button>
@@ -183,7 +182,6 @@ _____
             "#TGShopЗарядки", "#TGShopБездротовіЗарядніПристрої", "#TGShopМережевіЗарядніПристрої", "#TGShopЗарядкиДляНоутбуків", "#TGShopКабеліUSB", "#TGShopКабеліAUXіHDMI", "#TGShopХабиПерехідникиПодовжувачі",
             "#TGShopНавушники", "#TGShopНавушникиДляТелефона", "#TGShopBluetoothСтереоГарнітури", "#TGShopBluetoothМоноГарнітури", "#TGShopBluetoothСтереоГарнітуриTWS", "#TGShopГарнітуриДляПК"
         ];
-
         const hashtagField = document.getElementById('hashtagField');
         const hashtagButtonsContainer = document.querySelector('.hashtagButtons');
         const copyButton = document.getElementById('copyButton');
@@ -210,40 +208,39 @@ _____
                 button.classList.remove('selected', 'remove');
                 button.classList.add('add');
             } else {
-                hashtagField.value = currentText.replace('Тут вибрані хештеги', `Тут вибрані хештеги${tag}`);
+                hashtagField.value = currentText + tag + ' ';
                 button.classList.remove('add');
                 button.classList.add('selected', 'remove');
             }
         }
 
         copyButton.addEventListener('click', () => {
+            const title = titleField.value;
+            const price = priceField.value;
+            const description = descriptionField.value;
+            const hashtagsText = hashtagField.value.trim();
+            const finalText = `**Назва:** ${title}\n**Ціна:** ${calculatePrice(price)} грн\n**Опис:** ${description}\n\n${hashtagsText}`;
+            hashtagField.value = finalText;
             hashtagField.select();
             document.execCommand('copy');
             alert('Текст скопійовано в буфер обміну');
+            hashtagField.value = hashtagsText; // Reset to original hashtags
         });
 
         clearButton.addEventListener('click', () => {
-            // Reset the hashtag field
             hashtagField.value = `Навігація -  | \n_____\n**Менеджер замовлень:** @astrajker_cb_id\n**Код цього товару:** \`000000${++itemCode}\`\n**Оплата:** на Iban, або на картку.\n**Доставка:** Укр Пошта, Нова Пошта(відділення/поштомат)\n**Повернення:** 14 днів.`;
-            // Reset the new fields
-            titleField.value = '';
-            priceField.value = '';
-            descriptionField.value = '';
-            // Reset hashtag buttons
             document.querySelectorAll('.hashtagButton').forEach(button => {
                 button.classList.remove('selected', 'remove');
                 button.classList.add('add');
             });
         });
 
-        hashtagField.addEventListener('input', () => {
-            const lines = hashtagField.value.split('\n');
-            if (lines[3].includes('`')) {
-                const code = parseInt(lines[3].split('`')[1]);
-                lines[3] = '**Код цього товару:** `' + code + '`';
-                hashtagField.value = lines.join('\n');
-            }
-        });
+        function calculatePrice(price) {
+            const numericPrice = parseFloat(price);
+            if (isNaN(numericPrice)) return "0";
+            const markup = numericPrice * 0.3;
+            return (numericPrice + markup).toFixed(2);
+        }
     </script>
 </body>
 </html>
